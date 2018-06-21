@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<material>
+    <technique name="Techniques/DiffSkydome.xml" />
+    <texture unit="diffuse" name="SoftBody/Textures/vp_sky_v3_007_1024LGT.png" />
+    <parameter name="MatDiffColor" value="1 1 1 1" />
+    <cull value="none" />
+</material>

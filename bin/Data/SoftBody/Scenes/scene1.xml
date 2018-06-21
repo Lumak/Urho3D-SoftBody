@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<scene id="1">
+	<attribute name="Name" value="" />
+	<attribute name="Time Scale" value="1" />
+	<attribute name="Smoothing Constant" value="50" />
+	<attribute name="Snap Threshold" value="5" />
+	<attribute name="Elapsed Time" value="64.7622" />
+	<attribute name="Next Replicated Node ID" value="12" />
+	<attribute name="Next Replicated Component ID" value="22" />
+	<attribute name="Next Local Node ID" value="16777285" />
+	<attribute name="Next Local Component ID" value="16777487" />
+	<attribute name="Variables" />
+	<attribute name="Variable Names" value="" />
+	<component type="Octree" id="1" />
+	<component type="DebugRenderer" id="2" />
+	<component type="PhysicsWorld" id="3">
+		<attribute name="SoftBody World" value="true" />
+	</component>
+	<node id="2">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Zone" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="0 0 0" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="Zone" id="4">
+			<attribute name="Bounding Box Min" value="-1000 -1000 -1000" />
+			<attribute name="Bounding Box Max" value="1000 1000 1000" />
+			<attribute name="Ambient Color" value="0.15 0.15 0.15 15" />
+			<attribute name="Fog Color" value="1 1 1 1" />
+			<attribute name="Fog Start" value="500" />
+			<attribute name="Fog End" value="600" />
+		</component>
+	</node>
+	<node id="3">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="GlobalLight" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="0 0 0" />
+		<attribute name="Rotation" value="0.584022 0.765432 -0.214845 -0.163926" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="Light" id="5">
+			<attribute name="Light Type" value="Directional" />
+			<attribute name="Brightness Multiplier" value="1.2" />
+			<attribute name="Cast Shadows" value="true" />
+			<attribute name="CSM Splits" value="10 50 200 0" />
+		</component>
+	</node>
+	<node id="4">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="skydome" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="0 0 0" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="Skybox" id="6">
+			<attribute name="Model" value="Model;Models/Sphere.mdl" />
+			<attribute name="Material" value="Material;SoftBody/Materials/SkydomeMAT.xml" />
+		</component>
+	</node>
+	<node id="5">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Ground" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="0 0 0" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="500 1 500" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="7">
+			<attribute name="Model" value="Model;Models/Box.mdl" />
+			<attribute name="Material" value="Material;SoftBody/Materials/defaultMat.xml" />
+		</component>
+		<component type="RigidBody" id="8" />
+		<component type="CollisionShape" id="15" />
+	</node>
+	<node id="11">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="cameraSpawn" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="8.30285 1.21911 0" />
+		<attribute name="Rotation" value="0.707107 0 -0.707107 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+	</node>
+	<node id="16777279">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Cloth" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="3.72675e-08 0.920657 0.6" />
+		<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16777447">
+			<attribute name="Model" value="Model;Models/Cloth.mdl" />
+			<attribute name="Material" value="Material;Materials/ClothMat.xml" />
+		</component>
+		<component type="SoftBody" id="16777448" >
+			<attribute name="Mass" value="2" />
+			<attribute name="SoftBody Type" value="TriMesh" />
+			<attribute name="Create From StaticModel" value="true" />
+			<attribute name="Use Cloth Param" value="true" />
+			<attribute name="Anchor Body" value="true" />
+			<attribute name="Wind Velocity" value="50, -12.0, 15.0" />
+		</component>
+	</node>
+	<node id="16777284">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Cloth" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="0 0.920657 -0.6" />
+		<attribute name="Rotation" value="0.707107 0 0.707107 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="16777485">
+			<attribute name="Model" value="Model;Models/Cloth.mdl" />
+			<attribute name="Material" value="Material;Materials/ClothMat.xml" />
+		</component>
+		<component type="SoftBody" id="16777486" >
+			<attribute name="SoftBody Type" value="TriMesh" />
+			<attribute name="Mass" value="0.4" />
+			<attribute name="Create From StaticModel" value="true" />
+			<attribute name="Use Cloth Param" value="true" />
+			<attribute name="Anchor Body" value="true" />
+			<attribute name="Wind Velocity" value="40, -12.0, 5.0" />
+		</component>
+	</node>
+	<node id="12">
+		<attribute name="Is Enabled" value="false" />
+		<attribute name="Name" value="Sticks" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="0 0.275 -15" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="SoftBodyHelper" id="8" >
+			<attribute name="Make Type" value="1" />
+			<attribute name="Spacing" value="0.5" />
+		</component>
+	</node>
+	<node id="13">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Rope" />
+		<attribute name="Tags" />
+		<attribute name="Position" value="0 5 -5" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="7">
+			<attribute name="Model" value="Model;Models/Rope.mdl" />
+			<attribute name="Material" value="Material;SoftBody/Materials/uvMat.xml" />
+		</component>
+		<component type="SoftBody" id="9" >
+			<attribute name="SoftBody Type" value="Rope" />
+			<attribute name="Mass" value="2" />
+		</component>
+	</node>
+
+</scene>
