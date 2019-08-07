@@ -194,6 +194,8 @@ protected:
     Vector<Pair<unsigned, unsigned> > duplicatePairs_;
     /// Vertex remap list.
     PODVector<unsigned> remapList_;
+    /// Vertex re-ordered list.
+    Vector<unsigned> reorderedList_;
     /// Normals based on MDL model
     bool setToFaceNormals_;
     /// Linear stiffness coefficient [0,1]

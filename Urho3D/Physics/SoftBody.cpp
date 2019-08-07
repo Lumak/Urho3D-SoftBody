@@ -237,7 +237,7 @@ bool SoftBody::CreateStickFromStaticModel(int fixed)
         {
             // for sticks, add the zeroth point below the mesh's 1st pt
             PODVector<btVector3> btVectorList(ropePointList_.Size() + 1);
-            btVectorList[0] = ToBtVector3(ropePointList_[0] + Vector3(0.0f, -0.2f, 0.0f));
+            btVectorList[0] = ToBtVector3(ropePointList_[0] + Vector3(0.0f, -1.0f, 0.0f));
 
             for ( unsigned i = 0; i < ropePointList_.Size(); ++i )
             {
@@ -986,18 +986,30 @@ SharedPtr<Model> SoftBody::PruneModel(Model *model)
     // find duplicate verts
     if (vertexData)
     {
-        for ( unsigned i = 0; i < numVertices-1; ++i )
+        // unique vert list
+        Vector<Pair<unsigned, Vector3> > uniqPairs_;
+        reorderedList_.Resize(numVertices);
+
+        for ( unsigned i = 0; i < numVertices; ++i )
         {
             const Vector3 &v0 = *reinterpret_cast<const Vector3*>(vertexData + i * vertexSize);
+            bool found = false;
+            reorderedList_[i] = i;
 
-            for ( unsigned j = i+1; j < numVertices; ++j )
+            for ( unsigned j = 0; j < uniqPairs_.Size(); ++j )
             {
-                const Vector3 &v1 = *reinterpret_cast<const Vector3*>(vertexData + j * vertexSize);
-
-                if ((v1 - v0).LengthSquared() < M_EPSILON)
+                if ((uniqPairs_[j].second_ - v0).LengthSquared() < M_EPSILON)
                 {
-                    duplicatePairs_.Push(MakePair(i, j));
+                    duplicatePairs_.Push(MakePair(uniqPairs_[j].first_, i));
+                    reorderedList_[i] = uniqPairs_[j].first_;
+                    found = true;
+                    break;
                 }
+            }
+
+            if (!found)
+            {
+                uniqPairs_.Push(MakePair(i, v0));
             }
         }
         vbuffer->Unlock();
@@ -1022,8 +1034,7 @@ SharedPtr<Model> SoftBody::PruneModel(Model *model)
         if (ushortData && prunedUShortData)
         {
             unsigned numIndices = ibuffer->GetIndexCount();
-            Vector<unsigned> indexList;
-            indexList.Resize(numIndices);
+            Vector<unsigned> indexList(numIndices);
 
             // copy index list
             for( unsigned i = 0; i < numIndices; ++i )
@@ -1088,6 +1099,21 @@ SharedPtr<Model> SoftBody::PruneModel(Model *model)
             }
             ibuffer->Unlock();
             ibufferPruned->Unlock();
+
+            // reordered list
+            for (unsigned i = 0; i < reorderedList_.Size(); ++i)
+            {
+                unsigned idx = reorderedList_[i];
+
+                for ( unsigned j = 0; j < remapList_.Size(); ++j )
+                {
+                    if (remapList_[j] == idx)
+                    {
+                        reorderedList_[i] = j;
+                        break;
+                    }
+                }
+            }
         }
 
         // generate new pruned vertex buffer
@@ -1179,14 +1205,13 @@ void SoftBody::UpdateVertexBuffer(Model *model)
 
         unsigned numVertices = vbuffer->GetVertexCount();
         unsigned elementMask = vbuffer->GetElementMask();
+        const unsigned vertexSize = vbuffer->GetVertexSize();
         unsigned char *vertexData = (unsigned char*)vbuffer->Lock(0, numVertices);
 
         boundingBox_.Clear();
 
         if (vertexData)
         {
-            const unsigned vertexSize = vbuffer->GetVertexSize();
-
             if (duplicatePairs_.Size() == 0)
             {
                 for (int i = 0; i < body_->m_nodes.size(); ++i)
@@ -1209,44 +1234,23 @@ void SoftBody::UpdateVertexBuffer(Model *model)
             }
             else
             {
-                Vector<unsigned> updateList;
-
-                for ( int i = 0; i < body_->m_nodes.size(); ++i )
+                for (unsigned i = 0; i < numVertices; ++i )
                 {
-                    btSoftBody::Node& n = body_->m_nodes[i];
+                    unsigned char *dataAlign = (vertexData + i * vertexSize);
+                    unsigned vertIdx = reorderedList_[i];
+                    btSoftBody::Node& n = body_->m_nodes[vertIdx];
                     Vector3 pos = ToVector3(n.m_x);
                     Vector3 normal = ToVector3(n.m_n);
                     boundingBox_.Merge(pos);
 
-                    // get the vert idx of the node
-                    unsigned remapIndex = remapList_[i];
-
-                    // restore duplicate verts associated with 
-                    // the vert idx of the node's pos and normal
-                    updateList.Clear();
-                    updateList.Push(remapIndex);
-
-                    for ( unsigned j = 0; j < duplicatePairs_.Size(); ++j )
+                    if (elementMask & MASK_POSITION)
                     {
-                        if (duplicatePairs_[j].first_ == remapIndex)
-                        {
-                            updateList.Push(duplicatePairs_[j].second_);
-                        }
+                        *reinterpret_cast<Vector3*>(dataAlign) = pos;
+                        dataAlign += sizeof(Vector3);
                     }
-
-                    for ( unsigned j = 0; j < updateList.Size(); ++j )
+                    if (elementMask & MASK_NORMAL)
                     {
-                        unsigned char *dataAlign = (vertexData + updateList[j] * vertexSize);
-
-                        if (elementMask & MASK_POSITION)
-                        {
-                            *reinterpret_cast<Vector3*>(dataAlign) = pos;
-                            dataAlign += sizeof(Vector3);
-                        }
-                        if (elementMask & MASK_NORMAL)
-                        {
-                            *reinterpret_cast<Vector3*>(dataAlign) = normal;
-                        }
+                        *reinterpret_cast<Vector3*>(dataAlign) = normal;
                     }
                 }
             }
